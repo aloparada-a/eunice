@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Votar - Radio Campus</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body class="bg-slate-950 text-white min-h-screen flex flex-col justify-between p-5">
+
+  <header class="text-center pt-2">
+    <span class="bg-emerald-500/20 text-emerald-400 text-xs font-bold px-3 py-1 rounded-full">EN VIVO</span>
+    <h1 class="text-2xl font-black mt-2">📻 Radio Campus</h1>
+    <p class="text-slate-400 text-sm">Sonando: <span id="currentSong" class="text-white font-semibold">--</span></p>
+  </header>
+
+  <main class="my-auto space-y-5">
+    <div class="text-center">
+      <p class="text-slate-300 text-sm">Tiempo restante para votar:</p>
+      <p id="timer" class="text-4xl font-black font-mono text-amber-400">--s</p>
+    </div>
+
+    <div id="optionsContainer" class="space-y-4">
+      <button onclick="sendVote('A')" id="btnA" class="w-full text-left bg-slate-900 hover:bg-slate-800 active:scale-95 transition border-2 border-cyan-500/50 p-5 rounded-2xl shadow-lg">
+        <span class="text-xs font-black text-cyan-400 uppercase">Opción A</span>
+        <h2 id="titleA" class="text-xl font-bold mt-1">--</h2>
+        <p id="artistA" class="text-slate-400 text-sm">--</p>
+      </button>
+
+      <button onclick="sendVote('B')" id="btnB" class="w-full text-left bg-slate-900 hover:bg-slate-800 active:scale-95 transition border-2 border-fuchsia-500/50 p-5 rounded-2xl shadow-lg">
+        <span class="text-xs font-black text-fuchsia-400 uppercase">Opción B</span>
+        <h2 id="titleB" class="text-xl font-bold mt-1">--</h2>
+        <p id="artistB" class="text-slate-400 text-sm">--</p>
+      </button>
+    </div>
+
+    <div id="statusMsg" class="hidden p-4 rounded-xl text-center font-bold text-sm"></div>
+  </main>
+
+  <footer class="text-center text-xs text-slate-500 pb-2">
+    Un voto por dispositivo en cada ronda.
+  </footer>
+
+  <script>
+    const socket = io();
+    let voterId = localStorage.getItem('campus_voter_id');
+    if (!voterId) {
+      voterId = 'v_' + Math.random().toString(36).substring(2, 12);
+      localStorage.setItem('campus_voter_id', voterId);
+    }
+
+    async function loadState() {
+      const state = await fetch('/api/state').then(r => r.json());
+      renderOptions(state.currentSong, state.options);
+    }
+
+    function renderOptions(current, options) {
+      document.getElementById('currentSong').textContent = `${current.title} - ${current.artist}`;
+      document.getElementById('titleA').textContent = options[0].title;
+      document.getElementById('artistA').textContent = options[0].artist;
+      document.getElementById('titleB').textContent = options[1].title;
+      document.getElementById('artistB').textContent = options[1].artist;
+      resetButtons();
+    }
+
+    function resetButtons() {
+      document.getElementById('btnA').disabled = false;
+      document.getElementById('btnB').disabled = false;
+      document.getElementById('btnA').classList.remove('opacity-50');
+      document.getElementById('btnB').classList.remove('opacity-50');
+      document.getElementById('statusMsg').classList.add('hidden');
+    }
+
+    async function sendVote(option) {
+      const res = await fetch('/api/vote', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ option, voterId })
+      });
+      const data = await res.json();
+      const msgBox = document.getElementById('statusMsg');
+      msgBox.classList.remove('hidden', 'bg-emerald-500/20', 'text-emerald-300', 'bg-red-500/20', 'text-red-300');
+
+      if (res.ok) {
+        msgBox.classList.add('bg-emerald-500/20', 'text-emerald-300');
+        msgBox.textContent = `✅ ${data.message} Espera la siguiente canción para volver a votar.`;
+        document.getElementById('btnA').disabled = true;
+        document.getElementById('btnB').disabled = true;
+        document.getElementById('btnA').classList.add('opacity-50');
+        document.getElementById('btnB').classList.add('opacity-50');
+      } else {
+        msgBox.classList.add('bg-red-500/20', 'text-red-300');
+        msgBox.textContent = `⚠️ ${data.error}`;
+      }
+    }
+
+    socket.on('tick', (d) => {
+      document.getElementById('timer').textContent = d.isPaused ? 'PAUSADO' : `${d.timeLeft}s`;
+    });
+
+    socket.on('round_changed', (d) => {
+      renderOptions(d.currentSong, d.options);
+    });
+
+    loadState();
+  </script>
+</body>
+</html>

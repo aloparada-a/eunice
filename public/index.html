@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Radio Campus - Pantalla Pública</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body class="bg-slate-950 text-white h-screen overflow-hidden flex flex-col justify-between p-6 select-none">
+
+  <div id="startOverlay" class="fixed inset-0 bg-slate-950/95 z-50 flex flex-col items-center justify-center text-center p-8">
+    <h1 class="text-5xl font-black text-emerald-400 mb-4">📻 RADIO CAMPUS EN VIVO</h1>
+    <p class="text-xl text-slate-300 mb-8 max-w-xl">Haz clic para iniciar la transmisión de audio en streaming y el motor de locución por Inteligencia Artificial.</p>
+    <button onclick="initBroadcast()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-2xl px-10 py-5 rounded-2xl shadow-lg transition transform hover:scale-105">
+      INICIAR TRANSMISIÓN
+    </button>
+  </div>
+
+  <header class="flex justify-between items-center bg-slate-900/80 border border-slate-800 px-6 py-3 rounded-2xl">
+    <div class="flex items-center gap-4">
+      <span class="inline-block w-4 h-4 rounded-full bg-red-500 animate-pulse"></span>
+      <h1 id="campusTitle" class="text-2xl font-extrabold tracking-wide text-emerald-400">RADIO CAMPUS</h1>
+      <span id="ruleBadge" class="bg-indigo-600/40 border border-indigo-400/40 text-indigo-200 px-3 py-1 rounded-full text-sm font-semibold">Cargando contexto...</span>
+    </div>
+    <div class="flex items-center gap-6 text-lg font-medium">
+      <div id="aiSpeakingBadge" class="hidden bg-amber-500 text-slate-950 font-bold px-4 py-1 rounded-full animate-bounce">
+        🎙️ LOCUTOR IA AL AIRE
+      </div>
+      <div id="weatherBox" class="text-slate-300">🌡️ --°C</div>
+      <div id="clockBox" class="font-mono text-emerald-300 font-bold">--:--</div>
+    </div>
+  </header>
+
+  <main class="grid grid-cols-12 gap-6 my-4 flex-1 items-center">
+    <section class="col-span-5 bg-slate-900 border border-slate-800 rounded-3xl p-6 h-full flex flex-col justify-between shadow-2xl">
+      <div>
+        <span class="text-xs uppercase tracking-widest text-emerald-400 font-bold">Sonando Ahora</span>
+        <h2 id="nowTitle" class="text-3xl font-black mt-1 leading-tight truncate">--</h2>
+        <p id="nowArtist" class="text-xl text-slate-400 font-medium truncate">--</p>
+      </div>
+
+      <div class="relative w-full aspect-video bg-black rounded-2xl overflow-hidden my-4 border border-slate-700">
+        <div id="player"></div>
+        <div id="streamError" class="hidden absolute inset-0 bg-red-950/90 flex items-center justify-center p-4 text-center text-red-200 font-bold">
+          ⚠️ Error de conexión con streaming. Reintentando...
+        </div>
+      </div>
+
+      <div id="winnerBanner" class="bg-slate-800/80 text-emerald-300 px-4 py-2 rounded-xl text-center font-semibold text-sm">
+        Esperando resultados de ronda...
+      </div>
+    </section>
+
+    <section class="col-span-7 bg-slate-900 border border-slate-800 rounded-3xl p-6 h-full flex flex-col justify-between shadow-2xl">
+      <div class="flex justify-between items-center">
+        <div>
+          <span class="text-xs uppercase tracking-widest text-amber-400 font-bold">Votación Abierta</span>
+          <h2 class="text-3xl font-black">Elige la siguiente canción</h2>
+        </div>
+        <div class="text-right">
+          <span class="text-xs text-slate-400 block">CIERRA EN</span>
+          <span id="timerBox" class="text-5xl font-black font-mono text-amber-400">00s</span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-12 gap-4 items-center my-auto">
+        <div class="col-span-8 space-y-4">
+          <div class="bg-slate-800/90 p-5 rounded-2xl border-l-8 border-cyan-400">
+            <div class="flex justify-between items-end mb-2">
+              <div>
+                <span class="text-cyan-400 font-black text-sm">OPCIÓN A</span>
+                <h3 id="optATitle" class="text-2xl font-bold leading-tight">--</h3>
+                <p id="optAArtist" class="text-slate-400">--</p>
+              </div>
+              <span id="votesA" class="text-3xl font-black text-cyan-400">0%</span>
+            </div>
+            <div class="w-full bg-slate-700 h-3 rounded-full overflow-hidden">
+              <div id="barA" class="bg-cyan-400 h-full transition-all duration-500" style="width: 50%"></div>
+            </div>
+          </div>
+
+          <div class="bg-slate-800/90 p-5 rounded-2xl border-l-8 border-fuchsia-500">
+            <div class="flex justify-between items-end mb-2">
+              <div>
+                <span class="text-fuchsia-400 font-black text-sm">OPCIÓN B</span>
+                <h3 id="optBTitle" class="text-2xl font-bold leading-tight">--</h3>
+                <p id="optBArtist" class="text-slate-400">--</p>
+              </div>
+              <span id="votesB" class="text-3xl font-black text-fuchsia-400">0%</span>
+            </div>
+            <div class="w-full bg-slate-700 h-3 rounded-full overflow-hidden">
+              <div id="barB" class="bg-fuchsia-500 h-full transition-all duration-500" style="width: 50%"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-span-4 bg-white text-slate-950 p-4 rounded-2xl flex flex-col items-center justify-center text-center shadow-lg">
+          <img id="qrImg" src="" alt="QR Votación" class="w-44 h-44 object-contain">
+          <p class="font-black text-sm mt-2 uppercase">Escanea para votar</p>
+          <p id="voteUrlText" class="text-[10px] text-slate-500 break-all mt-1"></p>
+        </div>
+      </div>
+
+      <div class="bg-slate-950 border border-slate-800 px-5 py-3 rounded-xl flex items-center gap-3 overflow-hidden">
+        <span class="bg-emerald-500 text-slate-950 text-xs font-black px-2 py-1 rounded">AVISOS</span>
+        <marquee id="tickerText" class="text-lg text-slate-200 font-medium">Bienvenido a Radio Campus.</marquee>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script>
+    const socket = io();
+    let player;
+    let isReady = false;
+    let pendingVideoId = null;
+
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('player', {
+        height: '100%',
+        width: '100%',
+        videoId: '',
+        playerVars: { autoplay: 1, controls: 0, disablekb: 1, rel: 0 },
+        events: {
+          onReady: () => {
+            isReady = true;
+            if (pendingVideoId) player.loadVideoById(pendingVideoId);
+          },
+          onError: () => {
+            document.getElementById('streamError').classList.remove('hidden');
+          },
+          onStateChange: (e) => {
+            if (e.data === YT.PlayerState.PLAYING) {
+              document.getElementById('streamError').classList.add('hidden');
+            }
+          }
+        }
+      });
+    }
+
+    function playStream(youtubeId) {
+      if (!youtubeId) return;
+      if (isReady && player.loadVideoById) {
+        player.setVolume(85);
+        player.loadVideoById(youtubeId);
+      } else {
+        pendingVideoId = youtubeId;
+      }
+    }
+
+    function speakAnnouncement(text) {
+      if (!('speechSynthesis' in window) || !text) return;
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'es-MX';
+      utterance.rate = 1.02;
+
+      const badge = document.getElementById('aiSpeakingBadge');
+      utterance.onstart = () => {
+        badge.classList.remove('hidden');
+        if (isReady && player.setVolume) player.setVolume(20);
+      };
+      utterance.onend = () => {
+        badge.classList.add('hidden');
+        if (isReady && player.setVolume) player.setVolume(85);
+      };
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function initBroadcast() {
+      document.getElementById('startOverlay').classList.add('hidden');
+      loadInitialState();
+    }
+
+    async function loadInitialState() {
+      const qrRes = await fetch('/api/qr').then(r => r.json());
+      document.getElementById('qrImg').src = qrRes.qr;
+      document.getElementById('voteUrlText').textContent = qrRes.url;
+
+      const state = await fetch('/api/state').then(r => r.json());
+      document.getElementById('campusTitle').textContent = state.config.campusName;
+      updateSongUI(state.currentSong, state.options, state.activeRule, state.lastWinnerText);
+      updateVotesUI(state.votes);
+      playStream(state.currentSong.youtubeId);
+
+      const adsText = state.announcements.map(a => a.text).join('   ★   ');
+      if (adsText) document.getElementById('tickerText').textContent = adsText;
+    }
+
+    function updateSongUI(current, options, rule, winnerText) {
+      document.getElementById('nowTitle').textContent = current.title;
+      document.getElementById('nowArtist').textContent = current.artist;
+      document.getElementById('ruleBadge').textContent = rule;
+      if (winnerText) document.getElementById('winnerBanner').textContent = winnerText;
+
+      document.getElementById('optATitle').textContent = options[0].title;
+      document.getElementById('optAArtist').textContent = options[0].artist;
+      document.getElementById('optBTitle').textContent = options[1].title;
+      document.getElementById('optBArtist').textContent = options[1].artist;
+    }
+
+    function updateVotesUI(votes) {
+      const total = votes.A + votes.B;
+      const pctA = total === 0 ? 50 : Math.round((votes.A / total) * 100);
+      const pctB = total === 0 ? 50 : 100 - pctA;
+      document.getElementById('votesA').textContent = `${pctA}% (${votes.A})`;
+      document.getElementById('votesB').textContent = `${pctB}% (${votes.B})`;
+      document.getElementById('barA').style.width = `${pctA}%`;
+      document.getElementById('barB').style.width = `${pctB}%`;
+    }
+
+    socket.on('tick', (data) => {
+      document.getElementById('timerBox').textContent = data.isPaused ? 'PAUSA' : `${data.timeLeft}s`;
+      document.getElementById('weatherBox').textContent = `🌡️ ${data.weather.temp}°C`;
+      document.getElementById('clockBox').textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      updateVotesUI(data.votes);
+    });
+
+    socket.on('vote_updated', updateVotesUI);
+
+    socket.on('round_changed', (data) => {
+      updateSongUI(data.currentSong, data.options, data.activeRule, data.lastWinnerText);
+      updateVotesUI({ A: 0, B: 0 });
+      playStream(data.currentSong.youtubeId);
+      if (data.adToPlay) {
+        setTimeout(() => speakAnnouncement(data.adToPlay.text), 2500);
+      }
+    });
+
+    socket.on('force_speak', (text) => speakAnnouncement(text));
+    socket.on('config_updated', loadInitialState);
+  </script>
+</body>
+</html>

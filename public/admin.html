@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin - Radio Campus</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen">
+
+  <div id="loginBox" class="min-h-screen flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 p-8 rounded-2xl max-w-sm w-full space-y-4">
+      <h1 class="text-2xl font-black text-emerald-400">⚙️ Cabina Admin</h1>
+      <p class="text-sm text-slate-400">Ingresa la contraseña de administrador (por defecto: <code class="text-slate-200">campus2026</code>)</p>
+      <input type="password" id="passInput" placeholder="Contraseña" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3">
+      <button onclick="login()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3 rounded-xl">Entrar</button>
+    </div>
+  </div>
+
+  <div id="dashboard" class="hidden max-w-6xl mx-auto p-6 space-y-8">
+    <header class="flex flex-wrap justify-between items-center gap-4 border-b border-slate-800 pb-4">
+      <div>
+        <h1 class="text-3xl font-black text-emerald-400">⚙️ Panel de Control - Radio Campus</h1>
+        <p id="liveStatus" class="text-sm text-slate-400 mt-1">Cargando estado...</p>
+      </div>
+      <div class="flex gap-3">
+        <button onclick="adminAction('toggle_pause')" class="bg-amber-500 text-slate-950 font-bold px-4 py-2 rounded-xl">⏯️ Pausar / Reanudar</button>
+        <button onclick="adminAction('skip_round')" class="bg-indigo-600 text-white font-bold px-4 py-2 rounded-xl">⏭️ Cerrar Ronda Ahora</button>
+        <a href="/index.html" target="_blank" class="bg-slate-800 px-4 py-2 rounded-xl text-sm flex items-center">📺 Abrir Pantalla</a>
+      </div>
+    </header>
+
+    <!-- 1. PARÁMETROS GENERALES -->
+    <section class="bg-slate-900 p-6 rounded-2xl border border-slate-800 space-y-4">
+      <h2 class="text-xl font-bold text-emerald-400">1. Configuración General y Rondas</h2>
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm">
+        <div>
+          <label class="block text-slate-400 mb-1">Nombre Campus</label>
+          <input id="cfgName" class="w-full bg-slate-800 p-2 rounded-lg">
+        </div>
+        <div>
+          <label class="block text-slate-400 mb-1">Duración Ronda (seg)</label>
+          <input id="cfgDuration" type="number" class="w-full bg-slate-800 p-2 rounded-lg">
+        </div>
+        <div>
+          <label class="block text-slate-400 mb-1">Desempate</label>
+          <select id="cfgTie" class="w-full bg-slate-800 p-2 rounded-lg">
+            <option value="random">Aleatorio</option>
+            <option value="optionA">Priorizar Opción A</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-slate-400 mb-1">Latitud / Longitud</label>
+          <div class="flex gap-1">
+            <input id="cfgLat" type="number" step="0.01" class="w-1/2 bg-slate-800 p-2 rounded-lg">
+            <input id="cfgLon" type="number" step="0.01" class="w-1/2 bg-slate-800 p-2 rounded-lg">
+          </div>
+        </div>
+        <div>
+          <label class="block text-slate-400 mb-1">Anuncio cada X canciones</label>
+          <input id="cfgAdFreq" type="number" class="w-full bg-slate-800 p-2 rounded-lg">
+        </div>
+      </div>
+      <button onclick="saveConfig()" class="bg-emerald-500 text-slate-950 font-bold px-5 py-2 rounded-xl text-sm">Guardar Parámetros</button>
+    </section>
+
+    <!-- 2. CATÁLOGO MUSICAL Y SINCRONIZACIÓN YOUTUBE -->
+    <section class="bg-slate-900 p-6 rounded-2xl border border-slate-800 space-y-4">
+      <div class="flex justify-between items-center">
+        <h2 class="text-xl font-bold text-cyan-400">2. Catálogo Musical y Sincronización de Playlist</h2>
+        <span id="songCountBadge" class="text-xs bg-slate-800 text-cyan-300 px-3 py-1 rounded-full font-bold">0 canciones</span>
+      </div>
+
+      <!-- IMPORTADOR DE PLAYLIST YOUTUBE -->
+      <div class="bg-slate-950/70 p-4 rounded-xl border border-cyan-500/30 space-y-3">
+        <p class="text-xs text-slate-300">Pega el enlace de tu <b>Playlist Pública o No listada</b> de YouTube. El link quedará guardado para que actualices con un clic cuando agregues más canciones:</p>
+        <div class="flex flex-wrap gap-2 text-sm">
+          <input id="ytPlaylistInput" placeholder="https://www.youtube.com/playlist?list=PLxxxxxxxx..." class="flex-1 bg-slate-800 px-3 py-2 rounded-lg border border-slate-700 text-white">
+          <button onclick="syncPlaylist(false)" id="btnSyncAdd" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-4 py-2 rounded-lg">
+            🔄 Sincronizar Nuevas
+          </button>
+          <button onclick="syncPlaylist(true)" id="btnSyncReplace" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-4 py-2 rounded-lg" title="Borra las canciones actuales y deja solo las de esta playlist">
+            ♻️ Reemplazar Todo con Playlist
+          </button>
+        </div>
+      </div>
+
+      <!-- ALTA MANUAL INDIVIDUAL -->
+      <div class="grid grid-cols-2 md:grid-cols-7 gap-2 text-sm pt-2 border-t border-slate-800">
+        <input id="sTitle" placeholder="Título" class="bg-slate-800 p-2 rounded-lg">
+        <input id="sArtist" placeholder="Artista" class="bg-slate-800 p-2 rounded-lg">
+        <input id="sYt" placeholder="YouTube ID (ej. 4NRXx6U8ABQ)" class="bg-slate-800 p-2 rounded-lg">
+        <select id="sEnergy" class="bg-slate-800 p-2 rounded-lg">
+          <option value="baja">Energía: Baja</option>
+          <option value="media" selected>Energía: Media</option>
+          <option value="alta">Energía: Alta</option>
+        </select>
+        <input id="sTheme" placeholder="Temática (normal/examenes)" class="bg-slate-800 p-2 rounded-lg" value="normal">
+        <label class="flex items-center gap-2 bg-slate-800 p-2 rounded-lg">
+          <input id="sBackup" type="checkbox" checked> Respaldo
+        </label>
+        <button onclick="addSong()" class="bg-cyan-500 text-slate-950 font-bold rounded-lg">+ Agregar</button>
+      </div>
+
+      <!-- LISTA DE CANCIONES CON EDICIÓN RÁPIDA DE ETIQUETAS -->
+      <div id="songsList" class="divide-y divide-slate-800 text-sm max-h-96 overflow-y-auto pr-2"></div>
+    </section>
+
+    <!-- 3. REGLAS CONTEXTUALES Y EVENTOS -->
+    <div class="grid md:grid-cols-2 gap-6">
+      <section class="bg-slate-900 p-6 rounded-2xl border border-slate-800 space-y-4">
+        <h2 class="text-xl font-bold text-indigo-400">3. Reglas Contextuales</h2>
+        <div class="grid grid-cols-2 gap-2 text-sm">
+          <input id="rName" placeholder="Nombre regla" class="bg-slate-800 p-2 rounded-lg">
+          <input id="rPrio" type="number" placeholder="Prioridad (1-100)" class="bg-slate-800 p-2 rounded-lg">
+          <select id="rType" class="bg-slate-800 p-2 rounded-lg">
+            <option value="event">Evento (tag)</option>
+            <option value="time">Horario (morning/afternoon/night)</option>
+            <option value="temp_gt">Temp Mayor a (°C)</option>
+          </select>
+          <input id="rVal" placeholder="Valor (ej. examenes / 30)" class="bg-slate-800 p-2 rounded-lg">
+          <select id="rEnergy" class="bg-slate-800 p-2 rounded-lg">
+            <option value="">Cualquier Energía</option>
+            <option value="baja">Energía Baja</option>
+            <option value="media">Energía Media</option>
+            <option value="alta">Energía Alta</option>
+          </select>
+          <button onclick="addRule()" class="bg-indigo-500 text-white font-bold rounded-lg">+ Agregar Regla</button>
+        </div>
+        <div id="rulesList" class="divide-y divide-slate-800 text-sm"></div>
+      </section>
+
+      <section class="bg-slate-900 p-6 rounded-2xl border border-slate-800 space-y-4">
+        <h2 class="text-xl font-bold text-amber-400">4. Festividades y Eventos</h2>
+        <div class="grid grid-cols-3 gap-2 text-sm">
+          <input id="eName" placeholder="Nombre evento" class="bg-slate-800 p-2 rounded-lg">
+          <input id="eDate" type="date" class="bg-slate-800 p-2 rounded-lg">
+          <input id="eTag" placeholder="Tag (ej. examenes)" class="bg-slate-800 p-2 rounded-lg">
+        </div>
+        <button onclick="addEvent()" class="bg-amber-500 text-slate-950 font-bold px-4 py-2 rounded-lg text-sm">+ Registrar Evento</button>
+        <div id="eventsList" class="divide-y divide-slate-800 text-sm"></div>
+      </section>
+    </div>
+
+    <!-- 5. RADIO IA -->
+    <section class="bg-slate-900 p-6 rounded-2xl border border-slate-800 space-y-4">
+      <h2 class="text-xl font-bold text-fuchsia-400">5. Radio IA - Locución Automatizada</h2>
+      <div class="flex flex-wrap gap-2 text-sm">
+        <input id="aText" placeholder="Escribe el mensaje institucional para el locutor IA..." class="flex-1 bg-slate-800 p-2 rounded-lg">
+        <input id="aExp" type="date" class="bg-slate-800 p-2 rounded-lg" value="2027-12-31">
+        <button onclick="previewVoice()" class="bg-slate-700 px-4 py-2 rounded-lg">🔊 Vista Previa Aquí</button>
+        <button onclick="addAnnouncement()" class="bg-fuchsia-500 text-slate-950 font-bold px-4 py-2 rounded-lg">+ Guardar Anuncio</button>
+      </div>
+      <div id="adsList" class="divide-y divide-slate-800 text-sm"></div>
+    </section>
+
+    <!-- 6. HISTORIAL -->
+    <section class="bg-slate-900 p-6 rounded-2xl border border-slate-800 space-y-2">
+      <h2 class="text-xl font-bold text-slate-300">6. Historial de Rondas y Votos</h2>
+      <div id="historyList" class="text-xs text-slate-400 space-y-1 max-h-48 overflow-y-auto"></div>
+    </section>
+  </div>
+
+  <script>
+    let password = '';
+    let db = null;
+
+    async function login() {
+      password = document.getElementById('passInput').value;
+      const res = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password })
+      });
+      if (res.ok) {
+        document.getElementById('loginBox').classList.add('hidden');
+        document.getElementById('dashboard').classList.remove('hidden');
+        loadAdminData();
+      } else {
+        alert('Contraseña incorrecta');
+      }
+    }
+
+    async function loadAdminData() {
+      const res = await fetch('/api/admin/data', { headers: { 'x-admin-pass': password } });
+      const data = await res.json();
+      db = data.db;
+
+      document.getElementById('liveStatus').textContent = `Sonando: ${data.state.currentSong.title} | Regla: ${data.state.activeRule} | Clima: ${data.state.weather.temp}°C`;
+      document.getElementById('songCountBadge').textContent = `${db.songs.length} canciones`;
+
+      document.getElementById('cfgName').value = db.config.campusName;
+      document.getElementById('cfgDuration').value = db.config.roundDurationSec;
+      document.getElementById('cfgTie').value = db.config.tieBreaker;
+      document.getElementById('cfgLat').value = db.config.lat;
+      document.getElementById('cfgLon').value = db.config.lon;
+      document.getElementById('cfgAdFreq').value = db.config.announcementIntervalSongs;
+      if (db.config.savedPlaylistUrl) {
+        document.getElementById('ytPlaylistInput').value = db.config.savedPlaylistUrl;
+      }
+
+      document.getElementById('songsList').innerHTML = db.songs.map((s, idx) => `
+        <div class="py-2.5 flex flex-wrap justify-between items-center gap-2">
+          <div class="min-w-[220px] flex-1">
+            <span class="font-bold text-white">${s.title}</span> <span class="text-slate-400">- ${s.artist}</span>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <select onchange="updateSongField(${idx}, 'energy', this.value)" class="bg-slate-800 text-xs px-2 py-1 rounded text-cyan-300 border border-slate-700">
+              <option value="baja" ${s.energy === 'baja' ? 'selected' : ''}>Energía: Baja</option>
+              <option value="media" ${s.energy === 'media' ? 'selected' : ''}>Energía: Media</option>
+              <option value="alta" ${s.energy === 'alta' ? 'selected' : ''}>Energía: Alta</option>
+            </select>
+            <input onchange="updateSongField(${idx}, 'theme', this.value)" value="${s.theme}" placeholder="Temática" class="w-24 bg-slate-800 text-xs px-2 py-1 rounded text-amber-300 border border-slate-700" title="Temática (ej. normal, examenes, aniversario)">
+            <button onclick="adminAction('play_song', '${s.id}')" class="text-xs bg-emerald-600 hover:bg-emerald-500 px-2.5 py-1 rounded font-semibold">▶️ Sonar ya</button>
+            <button onclick="toggleSongAllowed(${idx})" class="text-xs bg-slate-700 px-2.5 py-1 rounded">${s.allowed ? '✅ Activa' : '🚫 Bloqueada'}</button>
+            <button onclick="deleteItem('songs', ${idx})" class="text-xs text-red-400 hover:text-red-300 px-2">Eliminar</button>
+          </div>
+        </div>
+      `).join('');
+
+      document.getElementById('rulesList').innerHTML = db.rules.map((r, idx) => `
+        <div class="py-2 flex justify-between">
+          <span><b>[P:${r.priority}]</b> ${r.name} (${r.conditionType}: ${r.conditionValue} → ${r.targetEnergy})</span>
+          <button onclick="deleteItem('rules', ${idx})" class="text-red-400 text-xs">Eliminar</button>
+        </div>
+      `).join('');
+
+      document.getElementById('eventsList').innerHTML = db.events.map((e, idx) => `
+        <div class="py-2 flex justify-between">
+          <span><b>${e.date}</b>: ${e.name} (tag: ${e.tag})</span>
+          <button onclick="deleteItem('events', ${idx})" class="text-red-400 text-xs">Eliminar</button>
+        </div>
+      `).join('');
+
+      document.getElementById('adsList').innerHTML = db.announcements.map((a, idx) => `
+        <div class="py-2 flex justify-between items-center gap-4">
+          <span>${a.text} <small class="text-slate-500">(Vence: ${a.expiresAt})</small></span>
+          <div class="flex gap-2 shrink-0">
+            <button onclick="adminAction('speak_now', '${a.text.replace(/'/g, "")}')" class="text-xs bg-fuchsia-600 px-2 py-1 rounded">🎙️ Emitir ahora</button>
+            <button onclick="deleteItem('announcements', ${idx})" class="text-xs text-red-400">Eliminar</button>
+          </div>
+        </div>
+      `).join('');
+
+      document.getElementById('historyList').innerHTML = db.history.map(h => `
+        <div>[${h.date}] <b>${h.song}</b> (Votos A:${h.votesA} / B:${h.votesB}) — <i>${h.rule}</i></div>
+      `).join('');
+    }
+
+    async function syncPlaylist(replaceAll) {
+      const playlistUrl = document.getElementById('ytPlaylistInput').value;
+      if (!playlistUrl) return alert('Pega primero el enlace o ID de tu playlist de YouTube.');
+      if (replaceAll && !confirm('¿Seguro que deseas borrar el catálogo actual y dejar únicamente las canciones de esta playlist?')) return;
+
+      const btnAdd = document.getElementById('btnSyncAdd');
+      const btnRep = document.getElementById('btnSyncReplace');
+      btnAdd.disabled = true;
+      btnRep.disabled = true;
+      btnAdd.textContent = 'Sincronizando...';
+
+      try {
+        const res = await fetch('/api/admin/sync-playlist', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-admin-pass': password },
+          body: JSON.stringify({ playlistUrl, replaceAll })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          alert(`✅ ¡Listo! Se agregaron ${data.added} canciones nuevas (de ${data.totalDetected} detectadas en la playlist).`);
+          loadAdminData();
+        } else {
+          alert(`⚠️ ${data.error}`);
+        }
+      } catch (e) {
+        alert('Error de red al sincronizar.');
+      } finally {
+        btnAdd.disabled = false;
+        btnRep.disabled = false;
+        btnAdd.textContent = '🔄 Sincronizar Nuevas';
+      }
+    }
+
+    async function saveSection(section, data) {
+      await fetch('/api/admin/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-pass': password },
+        body: JSON.stringify({ section, data })
+      });
+      loadAdminData();
+    }
+
+    function saveConfig() {
+      db.config.campusName = document.getElementById('cfgName').value;
+      db.config.roundDurationSec = parseInt(document.getElementById('cfgDuration').value);
+      db.config.tieBreaker = document.getElementById('cfgTie').value;
+      db.config.lat = parseFloat(document.getElementById('cfgLat').value);
+      db.config.lon = parseFloat(document.getElementById('cfgLon').value);
+      db.config.announcementIntervalSongs = parseInt(document.getElementById('cfgAdFreq').value);
+      saveSection('config', db.config);
+    }
+
+    function addSong() {
+      db.songs.push({
+        id: Date.now().toString(),
+        title: document.getElementById('sTitle').value,
+        artist: document.getElementById('sArtist').value,
+        youtubeId: document.getElementById('sYt').value,
+        genre: 'General',
+        energy: document.getElementById('sEnergy').value,
+        mood: 'general',
+        theme: document.getElementById('sTheme').value,
+        allowed: true,
+        isBackup: document.getElementById('sBackup').checked
+      });
+      saveSection('songs', db.songs);
+    }
+
+    function updateSongField(idx, field, value) {
+      db.songs[idx][field] = value;
+      saveSection('songs', db.songs);
+    }
+
+    function toggleSongAllowed(idx) {
+      db.songs[idx].allowed = !db.songs[idx].allowed;
+      saveSection('songs', db.songs);
+    }
+
+    function addRule() {
+      db.rules.push({
+        id: Date.now().toString(),
+        name: document.getElementById('rName').value,
+        priority: parseInt(document.getElementById('rPrio').value) || 50,
+        conditionType: document.getElementById('rType').value,
+        conditionValue: document.getElementById('rVal').value,
+        targetEnergy: document.getElementById('rEnergy').value,
+        targetTheme: ''
+      });
+      saveSection('rules', db.rules);
+    }
+
+    function addEvent() {
+      db.events.push({
+        id: Date.now().toString(),
+        name: document.getElementById('eName').value,
+        date: document.getElementById('eDate').value,
+        tag: document.getElementById('eTag').value
+      });
+      saveSection('events', db.events);
+    }
+
+    function addAnnouncement() {
+      db.announcements.push({
+        id: Date.now().toString(),
+        text: document.getElementById('aText').value,
+        active: true,
+        expiresAt: document.getElementById('aExp').value
+      });
+      saveSection('announcements', db.announcements);
+    }
+
+    function previewVoice() {
+      const u = new SpeechSynthesisUtterance(document.getElementById('aText').value);
+      u.lang = 'es-MX';
+      window.speechSynthesis.speak(u);
+    }
+
+    function deleteItem(section, idx) {
+      db[section].splice(idx, 1);
+      saveSection(section, db[section]);
+    }
+
+    async function adminAction(action, payload) {
+      await fetch('/api/admin/action', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-pass': password },
+        body: JSON.stringify({ action, payload })
+      });
+      loadAdminData();
+    }
+  </script>
+</body>
+</html>

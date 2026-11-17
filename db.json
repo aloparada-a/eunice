@@ -1,0 +1,440 @@
+{
+  "config": {
+    "campusName": "Radio Campus Central",
+    "roundDurationSec": 45,
+    "tieBreaker": "random",
+    "lat": 22.2553,
+    "lon": -97.8686,
+    "isPaused": false,
+    "announcementIntervalSongs": 2,
+    "savedPlaylistUrl": "https://www.youtube.com/playlist?list=PLxVuLg5ck6tZm7AIlRVyCS4ZAMq_ht0wB"
+  },
+  "songs": [
+    {
+      "id": "1794958686838az7b",
+      "title": "Welcome To The Other Side",
+      "artist": "DPR IAN",
+      "youtubeId": "DQ5RXxt9Gs0",
+      "genre": "Playlist",
+      "energy": "media",
+      "mood": "general",
+      "theme": "normal",
+      "allowed": true,
+      "isBackup": true
+    },
+    {
+      "id": "17949586868384ank",
+      "title": "Ballroom Extravaganza",
+      "artist": "DPR IAN",
+      "youtubeId": "ymgpvXVXJPQ",
+      "genre": "Playlist",
+      "energy": "media",
+      "mood": "general",
+      "theme": "normal",
+      "allowed": true,
+      "isBackup": true
+    },
+    {
+      "id": "1794958686838mfew",
+      "title": "Mr. Insanity",
+      "artist": "DPR IAN",
+      "youtubeId": "quJSN2RiRJ8",
+      "genre": "Playlist",
+      "energy": "media",
+      "mood": "general",
+      "theme": "normal",
+      "allowed": true,
+      "isBackup": true
+    },
+    {
+      "id": "1794958686838vull",
+      "title": "Don't Go Insane",
+      "artist": "DPR IAN",
+      "youtubeId": "Z7SNttUR9n0",
+      "genre": "Playlist",
+      "energy": "media",
+      "mood": "general",
+      "theme": "normal",
+      "allowed": true,
+      "isBackup": true
+    },
+    {
+      "id": "1794958686838s1xr",
+      "title": "Sometimes I'm",
+      "artist": "DPR IAN",
+      "youtubeId": "YHjuxGMnPK8",
+      "genre": "Playlist",
+      "energy": "media",
+      "mood": "general",
+      "theme": "normal",
+      "allowed": true,
+      "isBackup": true
+    },
+    {
+      "id": "1794958686838q41f",
+      "title": "The Show",
+      "artist": "DPR IAN",
+      "youtubeId": "z6qyEfH2D-o",
+      "genre": "Playlist",
+      "energy": "media",
+      "mood": "general",
+      "theme": "normal",
+      "allowed": true,
+      "isBackup": true
+    },
+    {
+      "id": "1794958686838v86c",
+      "title": "Bad Cold",
+      "artist": "DPR IAN",
+      "youtubeId": "BlFFH6tWrJk",
+      "genre": "Playlist",
+      "energy": "media",
+      "mood": "general",
+      "theme": "normal",
+      "allowed": true,
+      "isBackup": true
+    },
+    {
+      "id": "1794958686838n7k3",
+      "title": "No Silhouette",
+      "artist": "DPR IAN",
+      "youtubeId": "TpdlpCKRBhA",
+      "genre": "Playlist",
+      "energy": "media",
+      "mood": "general",
+      "theme": "normal",
+      "allowed": true,
+      "isBackup": true
+    },
+    {
+      "id": "1794958686838qvfv",
+      "title": "SAINT",
+      "artist": "DPR IAN",
+      "youtubeId": "FYQmElEiEOc",
+      "genre": "Playlist",
+      "energy": "media",
+      "mood": "general",
+      "theme": "normal",
+      "allowed": true,
+      "isBackup": true
+    },
+    {
+      "id": "1794958686838jxa3",
+      "title": "Peanut Butter &amp; Tears",
+      "artist": "DPR IAN",
+      "youtubeId": "lztqoTUG5UE",
+      "genre": "Playlist",
+      "energy": "media",
+      "mood": "general",
+      "theme": "normal",
+      "allowed": true,
+      "isBackup": true
+    },
+    {
+      "id": "1794958686838yx5s",
+      "title": "Calico",
+      "artist": "DPR IAN",
+      "youtubeId": "attctO9YQnk",
+      "genre": "Playlist",
+      "energy": "media",
+      "mood": "general",
+      "theme": "normal",
+      "allowed": true,
+      "isBackup": true
+    },
+    {
+      "id": "1794958686838smsb",
+      "title": "Scaredy Cat",
+      "artist": "DPR IAN",
+      "youtubeId": "RxylBz1OLdc",
+      "genre": "Playlist",
+      "energy": "media",
+      "mood": "general",
+      "theme": "normal",
+      "allowed": true,
+      "isBackup": true
+    },
+    {
+      "id": "17949586868382twf",
+      "title": "So Beautiful",
+      "artist": "DPR IAN",
+      "youtubeId": "EoYs-QEhgkc",
+      "genre": "Playlist",
+      "energy": "media",
+      "mood": "general",
+      "theme": "normal",
+      "allowed": true,
+      "isBackup": true
+    },
+    {
+      "id": "17949586868387etc",
+      "title": "Do or Die (ft. DPR IAN)",
+      "artist": "DPR ARTIC",
+      "youtubeId": "pnRFEq4tQlY",
+      "genre": "Playlist",
+      "energy": "media",
+      "mood": "general",
+      "theme": "normal",
+      "allowed": true,
+      "isBackup": true
+    },
+    {
+      "id": "1794958686838mxai",
+      "title": "Violet Crazy",
+      "artist": "DPR IAN",
+      "youtubeId": "Fk7siJOlAlw",
+      "genre": "Playlist",
+      "energy": "media",
+      "mood": "general",
+      "theme": "normal",
+      "allowed": true,
+      "isBackup": true
+    }
+  ],
+  "rules": [
+    {
+      "id": "r1",
+      "name": "Periodo de Exámenes",
+      "priority": 100,
+      "conditionType": "event",
+      "conditionValue": "examenes",
+      "targetEnergy": "baja",
+      "targetTheme": "examenes"
+    },
+    {
+      "id": "r2",
+      "name": "Aniversario Universitario",
+      "priority": 90,
+      "conditionType": "event",
+      "conditionValue": "aniversario",
+      "targetEnergy": "media",
+      "targetTheme": "aniversario"
+    },
+    {
+      "id": "r3",
+      "name": "Mañana Tranquila (06:00 - 11:59)",
+      "priority": 50,
+      "conditionType": "time",
+      "conditionValue": "morning",
+      "targetEnergy": "media",
+      "targetTheme": ""
+    },
+    {
+      "id": "r4",
+      "name": "Tarde Dinámica (12:00 - 18:59)",
+      "priority": 50,
+      "conditionType": "time",
+      "conditionValue": "afternoon",
+      "targetEnergy": "alta",
+      "targetTheme": ""
+    },
+    {
+      "id": "r5",
+      "name": "Calor Extremo (> 30°C)",
+      "priority": 60,
+      "conditionType": "temp_gt",
+      "conditionValue": "30",
+      "targetEnergy": "alta",
+      "targetTheme": ""
+    }
+  ],
+  "events": [
+    {
+      "id": "e1",
+      "name": "Semana de Parciales",
+      "date": "2026-11-20",
+      "tag": "examenes"
+    }
+  ],
+  "announcements": [
+    {
+      "id": "a1",
+      "text": "Recuerda escanear el código QR en pantalla para elegir la próxima canción de Radio Campus.",
+      "active": true,
+      "expiresAt": "2027-12-31"
+    },
+    {
+      "id": "a2",
+      "text": "Atención estudiantes: las inscripciones a los talleres culturales cierran este viernes en coordinación.",
+      "active": true,
+      "expiresAt": "2027-12-31"
+    }
+  ],
+  "history": [
+    {
+      "date": "17/11/2026, 5:51:10 p.m.",
+      "song": "Mr. Insanity - DPR IAN",
+      "votesA": 0,
+      "votesB": 0,
+      "rule": "Tarde Dinámica (12:00 - 18:59) (Prioridad 50)"
+    },
+    {
+      "date": "17/11/2026, 5:50:25 p.m.",
+      "song": "Do or Die (ft. DPR IAN) - DPR ARTIC",
+      "votesA": 0,
+      "votesB": 0,
+      "rule": "Tarde Dinámica (12:00 - 18:59) (Prioridad 50)"
+    },
+    {
+      "date": "17/11/2026, 5:49:39 p.m.",
+      "song": "SAINT - DPR IAN",
+      "votesA": 0,
+      "votesB": 0,
+      "rule": "Tarde Dinámica (12:00 - 18:59) (Prioridad 50)"
+    },
+    {
+      "date": "17/11/2026, 5:48:54 p.m.",
+      "song": "Sometimes I'm - DPR IAN",
+      "votesA": 0,
+      "votesB": 0,
+      "rule": "Tarde Dinámica (12:00 - 18:59) (Prioridad 50)"
+    },
+    {
+      "date": "17/11/2026, 5:48:09 p.m.",
+      "song": "The Show - DPR IAN",
+      "votesA": 0,
+      "votesB": 0,
+      "rule": "Tarde Dinámica (12:00 - 18:59) (Prioridad 50)"
+    },
+    {
+      "date": "17/11/2026, 5:47:23 p.m.",
+      "song": "Bad Cold - DPR IAN",
+      "votesA": 0,
+      "votesB": 0,
+      "rule": "Tarde Dinámica (12:00 - 18:59) (Prioridad 50)"
+    },
+    {
+      "date": "17/11/2026, 5:46:38 p.m.",
+      "song": "Mr. Insanity - DPR IAN",
+      "votesA": 0,
+      "votesB": 0,
+      "rule": "Tarde Dinámica (12:00 - 18:59) (Prioridad 50)"
+    },
+    {
+      "date": "17/11/2026, 5:45:53 p.m.",
+      "song": "Welcome To The Other Side - DPR IAN",
+      "votesA": 0,
+      "votesB": 0,
+      "rule": "Tarde Dinámica (12:00 - 18:59) (Prioridad 50)"
+    },
+    {
+      "date": "17/11/2026, 5:45:07 p.m.",
+      "song": "Ballroom Extravaganza - DPR IAN",
+      "votesA": 0,
+      "votesB": 0,
+      "rule": "Tarde Dinámica (12:00 - 18:59) (Prioridad 50)"
+    },
+    {
+      "date": "17/11/2026, 5:44:22 p.m.",
+      "song": "Don't Go Insane - DPR IAN",
+      "votesA": 0,
+      "votesB": 0,
+      "rule": "Tarde Dinámica (12:00 - 18:59) (Prioridad 50)"
+    },
+    {
+      "date": "17/11/2026, 5:43:36 p.m.",
+      "song": "No Silhouette - DPR IAN",
+      "votesA": 0,
+      "votesB": 0,
+      "rule": "Tarde Dinámica (12:00 - 18:59) (Prioridad 50)"
+    },
+    {
+      "date": "17/11/2026, 5:42:51 p.m.",
+      "song": "SAINT - DPR IAN",
+      "votesA": 0,
+      "votesB": 0,
+      "rule": "Tarde Dinámica (12:00 - 18:59) (Prioridad 50)"
+    },
+    {
+      "date": "17/11/2026, 5:42:06 p.m.",
+      "song": "The Show - DPR IAN",
+      "votesA": 0,
+      "votesB": 0,
+      "rule": "Tarde Dinámica (12:00 - 18:59) (Prioridad 50)"
+    },
+    {
+      "date": "17/11/2026, 5:41:20 p.m.",
+      "song": "Mr. Insanity - DPR IAN",
+      "votesA": 0,
+      "votesB": 0,
+      "rule": "Tarde Dinámica (12:00 - 18:59) (Prioridad 50)"
+    },
+    {
+      "date": "17/11/2026, 5:40:35 p.m.",
+      "song": "No Silhouette - DPR IAN",
+      "votesA": 0,
+      "votesB": 0,
+      "rule": "Tarde Dinámica (12:00 - 18:59) (Prioridad 50)"
+    },
+    {
+      "date": "17/11/2026, 5:39:50 p.m.",
+      "song": "Don't Go Insane - DPR IAN",
+      "votesA": 0,
+      "votesB": 0,
+      "rule": "Tarde Dinámica (12:00 - 18:59) (Prioridad 50)"
+    },
+    {
+      "date": "17/11/2026, 5:39:04 p.m.",
+      "song": "Sometimes I'm - DPR IAN",
+      "votesA": 0,
+      "votesB": 0,
+      "rule": "Tarde Dinámica (12:00 - 18:59) (Prioridad 50)"
+    },
+    {
+      "date": "17/11/2026, 5:38:19 p.m.",
+      "song": "Ballroom Extravaganza - DPR IAN",
+      "votesA": 0,
+      "votesB": 0,
+      "rule": "Tarde Dinámica (12:00 - 18:59) (Prioridad 50)"
+    },
+    {
+      "date": "17/11/2026, 5:36:50 p.m.",
+      "song": "Nigga - Alondra",
+      "votesA": 0,
+      "votesB": 0,
+      "rule": "Tarde Dinámica (12:00 - 18:59) (Prioridad 50) [Respaldo]"
+    },
+    {
+      "date": "17/11/2026, 5:36:05 p.m.",
+      "song": "Test - test",
+      "votesA": 0,
+      "votesB": 0,
+      "rule": "Tarde Dinámica (12:00 - 18:59) (Prioridad 50) [Respaldo]"
+    },
+    {
+      "date": "17/11/2026, 5:35:19 p.m.",
+      "song": "Nigga - Alondra",
+      "votesA": 0,
+      "votesB": 0,
+      "rule": "Tarde Dinámica (12:00 - 18:59) (Prioridad 50) [Respaldo]"
+    },
+    {
+      "date": "17/11/2026, 5:34:34 p.m.",
+      "song": "Test - test",
+      "votesA": 0,
+      "votesB": 0,
+      "rule": "Tarde Dinámica (12:00 - 18:59) (Prioridad 50) [Respaldo]"
+    },
+    {
+      "date": "17/11/2026, 5:33:49 p.m.",
+      "song": "Nigga - Alondra",
+      "votesA": 1,
+      "votesB": 0,
+      "rule": "Normal"
+    },
+    {
+      "date": "17/11/2026, 5:31:53 p.m.",
+      "song": "Levitating - Dua Lipa",
+      "votesA": 0,
+      "votesB": 0,
+      "rule": "Tarde Dinámica (12:00 - 18:59) (Prioridad 50)"
+    },
+    {
+      "date": "17/11/2026, 5:31:08 p.m.",
+      "song": "Lo-Fi Study Beats - Chillhop",
+      "votesA": 0,
+      "votesB": 0,
+      "rule": "Normal"
+    }
+  ]
+}
