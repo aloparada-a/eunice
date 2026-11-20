@@ -1,13 +1,13 @@
 {
   "config": {
     "campusName": "Radio Campus Central",
-    "roundDurationSec": 45,
+    "roundDurationSec": 60,
     "tieBreaker": "random",
     "lat": 22.2553,
     "lon": -97.8686,
     "isPaused": false,
     "announcementIntervalSongs": 2,
-    "savedPlaylistUrl": "https://www.youtube.com/playlist?list=PLxVuLg5ck6tZm7AIlRVyCS4ZAMq_ht0wB"
+    "savedPlaylistUrl": "https://music.youtube.com/playlist?list=PLOT_8Bct9pm4&si=ub5cnHYQ7ECSRxyd"
   },
   "songs": [
     {
@@ -241,8 +241,8 @@
   "events": [
     {
       "id": "e1",
-      "name": "Semana de Parciales",
-      "date": "2026-11-20",
+      "name": "Semana de Ordinarios",
+      "date": "2026-11-24",
       "tag": "examenes"
     }
   ],
@@ -388,13 +388,6 @@
       "rule": "Tarde Dinámica (12:00 - 18:59) (Prioridad 50)"
     },
     {
-      "date": "17/11/2026, 5:36:50 p.m.",
-      "song": "Nigga - Alondra",
-      "votesA": 0,
-      "votesB": 0,
-      "rule": "Tarde Dinámica (12:00 - 18:59) (Prioridad 50) [Respaldo]"
-    },
-    {
       "date": "17/11/2026, 5:36:05 p.m.",
       "song": "Test - test",
       "votesA": 0,
@@ -414,13 +407,6 @@
       "votesA": 0,
       "votesB": 0,
       "rule": "Tarde Dinámica (12:00 - 18:59) (Prioridad 50) [Respaldo]"
-    },
-    {
-      "date": "17/11/2026, 5:33:49 p.m.",
-      "song": "Nigga - Alondra",
-      "votesA": 1,
-      "votesB": 0,
-      "rule": "Normal"
     },
     {
       "date": "17/11/2026, 5:31:53 p.m.",
